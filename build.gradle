@@ -1,3 +1,5 @@
+defaultTasks "asciidoctor"
+
 buildscript {
     repositories {
         jcenter()
