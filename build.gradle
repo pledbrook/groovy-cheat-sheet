@@ -31,3 +31,8 @@ asciidoctor {
                linkattrs               : true,
                encoding                : 'utf-8'
 }
+
+task deploy(type: Sync) {
+    from file("$buildDir/asciidoc/html5")
+    into file("guide")
+}
