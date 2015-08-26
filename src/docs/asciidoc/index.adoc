@@ -18,8 +18,8 @@ Groovy comes with a selection of the basic types you'd expect, such as strings a
 | Type   |   Literals | Notes
 
 | java.lang.String
-| `"hi"`, `'hi'`, `/hi/`
-| Double quotes allow embedded expressions. Slashes mean you don't need to escape `\` characters (good for regular expressions).
+| `"hi"`, `'hi'`, `/hi/`, `$/hi/$`
+| Double quotes allow embedded expressions. Slashes mean you don't need to escape `\` characters, the dollar slashes mean you don't need to escape `/` characters (good for regular expressions).
 
 | java.lang.Character
 | `'H' as char`
