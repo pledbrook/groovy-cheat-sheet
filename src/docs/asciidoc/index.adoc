@@ -1,0 +1,441 @@
+= Groovy cheat sheet
+:toclevels: 2
+:numbered:
+:source-language: groovy
+
+
+Welcome to the Groovy cheat sheet! This is a condensed reference for Groovy syntax and other information that you might regularly want to look up.
+
+== Core types and operators
+
+Groovy comes with a selection of the basic types you'd expect, such as strings and numbers. Most of them are part of the standard Java class library, although Groovy introduces some  new literals.
+
+=== Type list
+
+[cols="1,1,2"]
+.Groovy's basic types
+|===
+| Type   |   Literals | Notes
+
+| java.lang.String
+| `"hi"`, `'hi'`, `/hi/`
+| Double quotes allow embedded expressions. Slashes mean you don't need to escape `\` characters (good for regular expressions).
+
+| java.lang.Character
+| `'H' as char`
+| Represents a single Unicode character. Primitive type: `char`
+
+| java.lang.Boolean
+| `true`, `false`
+| Primitive type: `boolean`
+
+| java.lang.Byte
+| `0 as byte`, `-12 as byte`
+| 8-bit integer. Primitive type: `byte`
+
+| java.lang.Integer
+| `0`, `-12`
+| 32-bit integer. Primitive type: `int`
+
+| java.lang.Long
+| `0L`, `-12L`
+| 64-bit integer. Primitive type: `long`
+
+| java.math.BigInteger
+| `0G`, `-12G`
+| No upper limit on values. No primitive equivalent
+
+| java.lang.Float
+| `0.0F`, `-12.12F`
+| 32-bit, single-precision floating-point number. Primitive type: `float`
+
+| java.lang.Double
+| `0.0D`, `-12.12D`
+| 64-bit, double-precision floating-point number. Primitive type: `double`
+
+| java.math.BigDecimal
+| `0.0`, `-12.12`
+| Exact, uncapped floating-point number. No, primitive equivalent.
+
+| java.util.List
+| `[]`, `[1, 2, 3]`
+| Can contain values of any type.
+
+| java.util.Set
+| `[] as Set`, `[1, 2, 3] as Set`
+| Can contain values of any type.
+
+| java.util.Map
+| `[:]`, `[one: 1, two: 2]`
+| String keys don't need quotes when using the map literal.
+
+| groovy.lang.IntRange
+| `0..<10`, `1..100`
+| The first literal excludes the upper bound, whereas the second includes it. The lower bound is always included.
+
+|===
+
+=== Coercions
+
+Groovy allow you to easily convert values from one type to another if the conversion is known, for example `String` -> `Character`, or `List` -> `Set`. Either declare a variable of the target type:
+
+[source,groovy]
+Set s = [1, 2, 3, 3]
+char ch = 'H'
+int[] a = [1, 2, 3, 4]
+
+or use the `as` operator:
+
+[source,groovy]
+def s = [1, 2, 3, 3] as Set
+def ch = 'H' as char
+def a = [1, 2, 3, 4] as int[]
+
+The `as` operator is more flexible as it can be used for method arguments too:
+
+[source,groovy]
+assert Character.getNumericValue('H' as char) == 17
+
+Without the coercion, the above code would throw a `MissingMethodException`.
+
+=== Overloadable operators
+
+Groovy allows you to implement operators in your own classes by implementing methods with specific signatures. You can also use the method names to look up what operators are supported by types in the Java class library and Groovy JDK extensions.
+
+Here's a list of such operators and what they generally mean. Try not to deviate from the semantics when you do your own operator overloading!
+
+[cols="1,1,2,1,1,2" options="header"]
+|====
+| Operator
+| Method
+| Semantics
+| Operator
+| Method
+| Semantics
+
+| `+`
+| a.plus(b)
+| Addition
+| `a[b]`
+| a.getAt(b)
+| Array access
+
+| `-`
+| a.minus(b)
+| Subtraction
+| `a[b] = c`
+| a.putAt(b, c)
+| Array mutation
+
+| `*`
+| a.multiply(b)
+| Multiplication
+| `a in b`
+| b.isCase(a)
+| 'is one of'
+
+| `/`
+| a.div(b)
+| Division
+| `<<`
+| a.leftShift(b)
+| Left shift or append
+
+| `%`
+| a.mod(b)
+| Modulo/remainder
+| `>>`
+| a.rightShift(b)
+| Right shift
+
+| `**`
+| a.power(b)
+| Exponentiation
+| `>>>`
+| a.rightShiftUnsigned(b)
+| Unsigned right shift
+
+| `\|`
+| a.or(b)
+| Bitwise OR
+| `++`
+| a.next()
+| Increment value
+
+| `&`
+| a.and(b)
+| Bitwise AND
+| `--`
+| a.previous()
+| Decrement value
+
+| `^`
+| a.xor(b)
+| Bitwise XOR
+| `+a`
+| a.positive()
+| Make positive
+
+| `as`
+| a.asType(b)
+| Type coercion
+| `-a`
+| a.negative()
+| Make negative
+
+| `a()`
+| a.call()
+| Method call
+| `~a`
+| a.bitwiseNegative()
+| Bitwise negate
+|====
+
+=== Other operators
+
+These operators return `true` or `false` based on different types of comparison.
+
+[cols="1,3"]
+.Comparators and other operators
+|===
+| Operator   | Semantics
+
+| `a == b`
+| Value-based equality
+
+| `a != b`
+| Value-based inequality
+
+| `a < b`
+| Less than
+
+| `a \<= b`
+| Less than or equal
+
+| `a > b`
+| Greater than
+
+| `a >= b`
+| Greater than or equal
+
+| `a \<\=> b`
+| Compare (returns -1, 0, or 1 if `a` is less, equal or greater)
+
+| `a =~ b`
+| Regex pattern match. Returns a `Matcher`, which equates to `true` if `a` matches any part of `b`.
+
+| `a ==~ b`
+| Regex pattern exact match. Returns `true` if `a` _exactly_ matches `b`.
+
+| `a?.b`
+| Null-safe navigation. Returns `null` if either `a` or `b` is `null`.
+
+| `a ? v1 : v2`
+| Ternary operator (concise if-else). Returns `v1` if expression `a` evaluates to `true`, otherwise `v2`.
+
+| `a ?: b`
+| Elvis operator. Returns value of `a` if it equates to `true` (Groovy Truth), otherwise returns `b`.
+
+|===
+
+
+== Flow control
+
+This section covers conditions, loops, and error handling via exceptions.
+
+=== Conditions
+
+The most common conditional in Groovy is the `if` statement:
+
+[source,groovy]
+----
+if (<expr>) {           // <1>
+    ...
+}
+else if (<expr>) {      // <2>
+    ...
+}
+else {                  // <3>
+    ...
+}
+----
+<1> Only the `if` is required and must come first.
+<2> You can have as many `else if` as you like.
+<3> You can only have a single `else` and it must come last.
+
+Other notes:
+
+* The curly braces are optional if the body of the block is only a single statement.
+* _<expr>_ must resolve to `true` or `false` according to Groovy Truth (see next sub section).
+
+The only alternative is the `switch` statement, which is like an extended `if-else if-else`:
+
+[source,groovy]
+----
+switch (<value>) {
+case <value>:                 // <1>
+    ...
+    break                     // <2>
+case <value>:                 // <3>
+    ...
+    break
+default:                      // <4>
+    ...
+    break
+}
+----
+<1> Matches if this value is the same as the one in the `switch`. More generally, matches if `caseValue.isCase(switchValue)` evaluates to `true`.
+<2> `break` is not required but without it, the following `case` will always trigger too.
+<3> You can have as many `case` statements as you like.
+<4> If none of the `case` statements match, this will trigger. It is not required.
+
+=== Groovy Truth
+
+Groovy will automatically coerce expressions to boolean values where a boolean is required, for example in an `if` statement. Here are some standard coercions:
+
+.Groovy Truth coercions
+|===
+| Type   |   Values equating to `false` | Values equating to `true`
+
+| String
+| Empty or `null`
+| Everything else
+
+| Number
+| Zero or `null`
+| Everything else
+
+| Collection
+| Empty or `null`
+| Everything else
+
+| Map
+| Empty or `null`
+| Everything else
+
+| Matcher (`=~`)
+| No match found
+| At least one match
+
+|===
+
+=== Loops
+
+Groovy has two main loops: `for` and `while`. There is no `do-while`. The predominant syntax for the `for` loop is:
+
+[source,groovy]
+for (<var> in <value>) {
+    ...
+}
+
+where _<var>_ is a typed or untyped variable and <value> is something that can be iterated over, such as a list or a range of numbers. For example, iterating over numbers can be done with:
+
+[source,groovy]
+for (int i in 0..<10) {
+    ...
+}
+
+Here's an example of iterating over a list of strings:
+
+[source, groovy]
+----
+List<String> listOfNames = ...
+
+for (name in listOfNames) {
+    ...
+}
+----
+
+There is a less common form of the `for` loop which mimics the behaviour of Java:
+
+[source,groovy]
+for (int i = 0; i < 10; i += 2) {
+    ...
+}
+
+This is rarely used and should be avoided if possible. It doesn't support the `,` operator that allows initialisation of multiple variables, so it's not completely consistent with Java. That makes is confusing for people coming from that language.
+
+The `while` loop is straightforward:
+
+[source,groovy]
+while (<expr>) {
+    ...
+}
+
+where _<expr>_ is an expression that can be evaluated to a boolean according to Groovy Truth.
+
+=== Exceptions
+
+The normal mechanism for error handling in Groovy is via exceptions, same as for Java. Unlike Java, though, Groovy treats all exceptions as runtime ones, which means the compiler does not force you to catch them.
+
+Here is the basic syntax:
+
+[source,groovy]
+----
+try {
+    // Execute the code that might throw an exception
+}
+catch (SpecficException ex) {                 // <1>
+    // Do something with the exception `ex`
+}
+catch (GenericException ex) {
+    ...
+}
+finally {                                     // <2>
+    ...
+}
+----
+<1> Catch expressions are evaluated in declared order, so the first one that matches the thrown exception wins. Hence you normally order them from most specific to least specific.
+<2> The `finally` block always executes, regardless of whether the code throws an exception or not.
+
+**Note** The `try` is required, but the `catch` and `finally` blocks are optional. You have to have at least one `catch` *or* a `finally`, though.
+
+Throwing an exception is even easier:
+
+[source]
+throw new MyException()
+
+In other words, you instantiate an exception just like any other object and use it as the argument to `throw`. You can also use `throw` to rethrow an exception from a `catch` block.
+
+== Classes and objects
+
+Groovy is an object-oriented language whose custom types are known as classes. It also support interfaces, which have no implementation and simply define a contract between the caller and callee. In other words, one or more defined method signatures.
+
+=== Class definitions
+
+[source]
+----
+[package <pkg>]                                                            // <1>
+
+[<scope>] [abstract|final] class ClassName [extends OtherClass]
+                                     [implements FirstInterface, SecondInterface] {
+
+    [<scope>] [static] [final] def|<type> fieldName [= <value>]            // <2>
+
+    [<scope>] [static] [final] def|<type>|void methodName([<args>]) {      // <3>
+        // Method body
+    }
+
+    [<scope>] [abstract] def|<type>|void methodName([<args>])              // <4>
+}
+----
+<1> Optional package/namespace for the class. Ideally all classes should be in a package.
+<2> Declares a field or property (see properties section) for storing state. Cardinality: 0..*
+<3> Defines a method implementation that can be called from other code.
+<4> Declares an _abstract_ method, i.e. one that has no implementation and must be implemented by subclasses.
+
+Legend:
+
+* _[...]_ = something that's optional.
+* _...|..._ = indicates mutually exclusive options.
+* _<pkg>_ = a dot-separated namespace, e.g. _org.example_ or _java.lang_.
+* _<scope>_ = a visibility scope that determines what other code has access to the class/field/method. Groovy defaults to `public`, i.e. all code has access. `protected` is accessible from subclasses and code in the same package (packages are **not** hierarchical). `private` is only accessible from the same class. `protected` and `private` do not apply to classes.
+* _<abstract>_ = applies to classes (they can't be instantiated directly) and methods (they have no implementation and must be implemented in subclasses). If a class has at least one abstract method, it is automatically an abstract class.
+* _<final>_ = declares that a class cannot be subclassed or that a method cannot be overridden.
+* _<static>_ = declares a field that is shared between all instances of the class, or a method that can be called on the class itself, not an instance of the class.
+* _<type>_ = an explicit type, such as `String` or `int`.
+* _<value>_ = an initial value for a field or property (can be an expression too).
+* _<args>_ = a comma-separated list of method arguments. Each argument is of the form `[<type>] <name>`. Cardinality: 0..*.
+* _extends_ = declares that this class subclasses another class. You cannot extend more than one class.
+* _implements_ = declares that this class implements the methods defined in the listed interfaces. You can implement as many interfaces as you like.
+* _
