@@ -104,11 +104,8 @@ Groovy allows you to implement operators in your own classes by implementing met
 
 Here's a list of such operators and what they generally mean. Try not to deviate from the semantics when you do your own operator overloading!
 
-[cols="1,1,2,1,1,2" options="header"]
+[cols="1,1,2" width="60" options="header"]
 |====
-| Operator
-| Method
-| Semantics
 | Operator
 | Method
 | Semantics
@@ -116,76 +113,87 @@ Here's a list of such operators and what they generally mean. Try not to deviate
 | `+`
 | a.plus(b)
 | Addition
-| `a[b]`
-| a.getAt(b)
-| Array access
 
 | `-`
 | a.minus(b)
 | Subtraction
-| `a[b] = c`
-| a.putAt(b, c)
-| Array mutation
 
 | `*`
 | a.multiply(b)
 | Multiplication
-| `a in b`
-| b.isCase(a)
-| 'is one of'
 
 | `/`
 | a.div(b)
 | Division
-| `<<`
-| a.leftShift(b)
-| Left shift or append
 
 | `%`
 | a.mod(b)
 | Modulo/remainder
-| `>>`
-| a.rightShift(b)
-| Right shift
 
 | `**`
 | a.power(b)
 | Exponentiation
-| `>>>`
-| a.rightShiftUnsigned(b)
-| Unsigned right shift
 
 | `\|`
 | a.or(b)
 | Bitwise OR
-| `++`
-| a.next()
-| Increment value
 
 | `&`
 | a.and(b)
 | Bitwise AND
-| `--`
-| a.previous()
-| Decrement value
 
 | `^`
 | a.xor(b)
 | Bitwise XOR
-| `+a`
-| a.positive()
-| Make positive
 
 | `as`
 | a.asType(b)
 | Type coercion
-| `-a`
-| a.negative()
-| Make negative
 
 | `a()`
 | a.call()
 | Method call
+
+| `a[b]`
+| a.getAt(b)
+| Array access
+
+| `a[b] = c`
+| a.putAt(b, c)
+| Array mutation
+
+| `a in b`
+| b.isCase(a)
+| 'is one of'
+
+| `<<`
+| a.leftShift(b)
+| Left shift or append
+
+| `>>`
+| a.rightShift(b)
+| Right shift
+
+| `>>>`
+| a.rightShiftUnsigned(b)
+| Unsigned right shift
+
+| `++`
+| a.next()
+| Increment value
+
+| `--`
+| a.previous()
+| Decrement value
+
+| `+a`
+| a.positive()
+| Make positive
+
+| `-a`
+| a.negative()
+| Make negative
+
 | `~a`
 | a.bitwiseNegative()
 | Bitwise negate
