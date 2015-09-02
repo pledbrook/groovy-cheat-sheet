@@ -402,6 +402,19 @@ while (<expr>) {
 
 where _<expr>_ is an expression that can be evaluated to a boolean according to Groovy Truth.
 
+For completeness, another common approach to iteration is with the `each()` method:
+
+[source]
+----
+List<String> listOfNames = ...
+
+listOfNames.each { String name ->
+    ...
+}
+----
+
+One notable disadvantage of this approach is that Groovy can't infer the type of the objects in the iterable, so it's often best to explicitly declare the type of the closure argument. See later for more closure syntax.
+
 === Exceptions
 
 The normal mechanism for error handling in Groovy is via exceptions, same as for Java. Unlike Java, though, Groovy treats all exceptions as runtime ones, which means the compiler does not force you to catch them.
