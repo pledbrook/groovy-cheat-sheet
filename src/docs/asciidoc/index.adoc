@@ -382,6 +382,8 @@ for (name in listOfNames) {
 }
 ----
 
+**Note** The above form of `for` works for any instance of `java.lang.Iterable`, such as collections and strings.
+
 There is a less common form of the `for` loop which mimics the behaviour of Java:
 
 [source,groovy]
