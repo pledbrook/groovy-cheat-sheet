@@ -421,7 +421,7 @@ The normal mechanism for error handling in Groovy is via exceptions, same as for
 
 Here is the basic syntax:
 
-[source,groovy]
+[source]
 ----
 try {
     // Execute the code that might throw an exception
@@ -447,6 +447,25 @@ Throwing an exception is even easier:
 throw new MyException()
 
 In other words, you instantiate an exception just like any other object and use it as the argument to `throw`. You can also use `throw` to rethrow an exception from a `catch` block.
+
+If you want to execute the same block of code for more than one different exception, you can use a **multi-catch** block:
+
+[source]
+----
+try {
+    // Execute the code that might throw an exception
+}
+catch (SpecficException | OtherException ex) {
+    // Do something with the exception `ex`
+}
+----
+
+So in general, a catch takes the form:
+
+[source]
+catch (<type> [| <type>]* <var>) { ... }
+
+where * indicates 0 or more of what's in the square brackets.
 
 == Classes and objects
 
