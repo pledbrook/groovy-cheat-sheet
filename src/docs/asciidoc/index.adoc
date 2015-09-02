@@ -75,6 +75,34 @@ Groovy comes with a selection of the basic types you'd expect, such as strings a
 
 |===
 
+In addition to all the string literal variants shown in the table above, you can create **multi-line strings** by using three quotes in a rows. For example:
+
+[source]
+----
+def text = """Dear sir,
+
+Welcome to Top Bank!
+"""
+----
+
+You can use single or double quotes, with the latter allowing you to embed Groovy expressions (the behavior matches that of the equivalent normal strings).
+
+**Line continuations** allow you to split long lines of text across multiple lines of your source code:
+
+[source]
+----
+def text = """\
+one \
+two \
+three \
+"""
+
+assert text == "one two three"
+----
+
+For this to work, you can't have any characters, even whitespace, after the backslash ('\').
+
+
 === Coercions
 
 Groovy allow you to easily convert values from one type to another if the conversion is known, for example `String` -> `Character`, or `List` -> `Set`. Either declare a variable of the target type:
