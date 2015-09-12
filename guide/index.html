@@ -525,6 +525,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_classes_and_objects">3. Classes and objects</a>
 <ul class="sectlevel2">
 <li><a href="#_class_definitions">3.1. Class definitions</a></li>
+<li><a href="#_objects">3.2. Objects</a></li>
+<li><a href="#_properties">3.3. Properties</a></li>
 </ul>
 </li>
 </ul>
@@ -563,8 +565,8 @@ table.CodeRay td.code>pre{padding:0}
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"hi"</code>, <code>'hi'</code>, <code>/hi/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Double quotes allow embedded expressions. Slashes mean you don&#8217;t need to escape <code>\</code> characters (good for regular expressions).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"hi"</code>, <code>'hi'</code>, <code>/hi/</code>, <code>$/hi/$</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Double quotes allow embedded expressions. Slashes mean you don&#8217;t need to escape <code>\</code> characters, the dollar slashes mean you don&#8217;t need to escape <code>/</code> characters (good for regular expressions).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Character</p></td>
@@ -633,6 +635,37 @@ table.CodeRay td.code>pre{padding:0}
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>In addition to all the string literal variants shown in the table above, you can create <strong>multi-line strings</strong> by using three quotes in a rows. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> text = <span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Dear sir,
+
+Welcome to Top Bank!
+</span><span class="delimiter">&quot;&quot;&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use single or double quotes, with the latter allowing you to embed Groovy expressions (the behavior matches that of the equivalent normal strings).</p>
+</div>
+<div class="paragraph">
+<p><strong>Line continuations</strong> allow you to split long lines of text across multiple lines of your source code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> text = <span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="char">\
+</span><span class="content">one </span><span class="char">\
+</span><span class="content">two </span><span class="char">\
+</span><span class="content">three </span><span class="char">\
+</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+
+<span class="keyword">assert</span> text == <span class="string"><span class="delimiter">&quot;</span><span class="content">one two three</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For this to work, you can&#8217;t have any characters, even whitespace, after the backslash ('\').</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_coercions">1.2. Coercions</h3>
@@ -676,20 +709,14 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p>Here&#8217;s a list of such operators and what they generally mean. Try not to deviate from the semantics when you do your own operator overloading!</p>
 </div>
-<table class="tableblock frame-all grid-all spread">
+<table class="tableblock frame-all grid-all" style="width: 60%;">
 <colgroup>
-<col style="width: 12%;">
-<col style="width: 12%;">
 <col style="width: 25%;">
-<col style="width: 12%;">
-<col style="width: 12%;">
 <col style="width: 25%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Operator</th>
-<th class="tableblock halign-left valign-top">Method</th>
-<th class="tableblock halign-left valign-top">Semantics</th>
 <th class="tableblock halign-left valign-top">Operator</th>
 <th class="tableblock halign-left valign-top">Method</th>
 <th class="tableblock halign-left valign-top">Semantics</th>
@@ -700,86 +727,108 @@ table.CodeRay td.code>pre{padding:0}
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>+</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.plus(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Addition</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a[b]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.getAt(b)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Array access</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.minus(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Subtraction</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a[b] = c</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.putAt(b, c)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Array mutation</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.multiply(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Multiplication</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a in b</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">b.isCase(a)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">'is one of'</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>/</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.div(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Division</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;&lt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.leftShift(b)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Left shift or append</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.mod(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Modulo/remainder</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.rightShift(b)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Right shift</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>**</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.power(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Exponentiation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;&gt;&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.rightShiftUnsigned(b)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unsigned right shift</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.or(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bitwise OR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>++</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.next()</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Increment value</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&amp;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.and(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bitwise AND</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.previous()</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Decrement value</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>^</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.xor(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bitwise XOR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>+a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.positive()</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Make positive</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>as</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.asType(b)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type coercion</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a.negative()</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Make negative</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>a()</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.call()</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Method call</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a[b]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.getAt(b)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array access</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a[b] = c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.putAt(b, c)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array mutation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a in b</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">b.isCase(a)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'is one of'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;&lt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.leftShift(b)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Left shift or append</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.rightShift(b)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Right shift</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.rightShiftUnsigned(b)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unsigned right shift</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>++</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.next()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Increment value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>--</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.previous()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decrement value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>+a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.positive()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make positive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a.negative()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make negative</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>~a</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a.bitwiseNegative()</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bitwise negate</p></td>
@@ -1026,6 +1075,9 @@ for (name <span class="keyword">in</span> listOfNames) {
 </div>
 </div>
 <div class="paragraph">
+<p><strong>Note</strong> The above form of <code>for</code> works for any instance of <code>java.lang.Iterable</code>, such as collections and strings.</p>
+</div>
+<div class="paragraph">
 <p>There is a less common form of the <code>for</code> loop which mimics the behaviour of Java:</p>
 </div>
 <div class="listingblock">
@@ -1050,6 +1102,21 @@ for (name <span class="keyword">in</span> listOfNames) {
 </div>
 <div class="paragraph">
 <p>where <em>&lt;expr&gt;</em> is an expression that can be evaluated to a boolean according to Groovy Truth.</p>
+</div>
+<div class="paragraph">
+<p>For completeness, another common approach to iteration is with the <code>each()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt; listOfNames = ...
+
+listOfNames.each { <span class="predefined-type">String</span> name -&gt;
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One notable disadvantage of this approach is that Groovy can&#8217;t infer the type of the objects in the iterable, so it&#8217;s often best to explicitly declare the type of the closure argument. See later for more closure syntax.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1098,7 +1165,36 @@ for (name <span class="keyword">in</span> listOfNames) {
 </div>
 </div>
 <div class="paragraph">
-<p>In other words, you instantiate an exception just like any other object and use it as the argument to <code>throw</code>. You can also use <code>throw</code> to rethrow an exception from a <code>catch</code> block.</p>
+<p>In other words, you instantiate an exception just like any other object and use it as the argument to <code>throw</code>. You can also use <code>throw</code> to rethrow an exception from a <code>catch</code> block. And just as you can pass arguments when creating normal objects, you can do the same with exceptions. One of the most common arguments (supported by most exceptions) is a message explaining the error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">ConnectException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Credentials are invalid</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to execute the same block of code for more than one different exception, you can use a <strong>multi-catch</strong> block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">try</span> {
+    <span class="comment">// Execute the code that might throw an exception</span>
+}
+<span class="keyword">catch</span> (SpecficException | OtherException ex) {
+    <span class="comment">// Do something with the exception `ex`</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So in general, a catch takes the form:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">catch</span> (&lt;type&gt; [| &lt;type&gt;]* &lt;var&gt;) { ... }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where * indicates 0 or more of what&#8217;s in the square brackets.</p>
 </div>
 </div>
 </div>
@@ -1120,24 +1216,31 @@ for (name <span class="keyword">in</span> listOfNames) {
 
     [&lt;scope&gt;] [<span class="directive">static</span>] [<span class="directive">final</span>] <span class="keyword">def</span>|&lt;type&gt; fieldName [= &lt;value&gt;]            <b class="conum">(2)</b>
 
-    [&lt;scope&gt;] [<span class="directive">static</span>] [<span class="directive">final</span>] <span class="keyword">def</span>|&lt;type&gt;|<span class="type">void</span> methodName([&lt;args&gt;]) {      <b class="conum">(3)</b>
+    [&lt;scope&gt;] ClassName([&lt;args]) {                                         <b class="conum">(3)</b>
+        <span class="comment">// Body</span>
+    }
+
+    [&lt;scope&gt;] [<span class="directive">static</span>] [<span class="directive">final</span>] <span class="keyword">def</span>|&lt;type&gt;|<span class="type">void</span> methodName([&lt;args&gt;]) {      <b class="conum">(4)</b>
         <span class="comment">// Method body</span>
     }
 
-    [&lt;scope&gt;] [<span class="directive">abstract</span>] <span class="keyword">def</span>|&lt;type&gt;|<span class="type">void</span> methodName([&lt;args&gt;])              <b class="conum">(4)</b>
+    [&lt;scope&gt;] [<span class="directive">abstract</span>] <span class="keyword">def</span>|&lt;type&gt;|<span class="type">void</span> methodName([&lt;args&gt;])              <b class="conum">(5)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
 <li>
-<p>Optional package/namespace for the class. Ideally all classes should be in a package.</p>
+<p>Optional <strong>package</strong>/namespace for the class. Ideally all classes should be in a package.</p>
 </li>
 <li>
-<p>Declares a field or property (see properties section) for storing state. Cardinality: 0..*</p>
+<p>Declares a <strong>field</strong> or <strong>property</strong> (see properties section) for storing state. Cardinality: 0..*</p>
 </li>
 <li>
-<p>Defines a method implementation that can be called from other code.</p>
+<p>Declares a <strong>constructor</strong> that allows you to initialise new instances of the class.</p>
+</li>
+<li>
+<p>Defines a <strong>method</strong> implementation that can be called from other code.</p>
 </li>
 <li>
 <p>Declares an <em>abstract</em> method, i.e. one that has no implementation and must be implemented by subclasses.</p>
@@ -1185,18 +1288,133 @@ for (name <span class="keyword">in</span> listOfNames) {
 <li>
 <p><em>implements</em> = declares that this class implements the methods defined in the listed interfaces. You can implement as many interfaces as you like.</p>
 </li>
-<li>
-<p>_</p>
-</li>
 </ul>
 </div>
+<div class="paragraph">
+<p>Here&#8217;s an example of a simple class with a property and method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">Person</span> {
+    <span class="predefined-type">String</span> name
+    <span class="predefined-type">Date</span> dateOfBirth
+
+    <span class="type">int</span> getAge() {
+        <span class="keyword">return</span> (<span class="keyword">new</span> <span class="predefined-type">Date</span>() - dateOfBirth).intdiv(<span class="integer">365</span>)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Remember that you can replace the types in front of the property names by <code>def</code> if you want to leave them untyped.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_objects">3.2. Objects</h3>
+<div class="paragraph">
+<p>Objects are instances of classes. To create new objects, you can either use literals, such as those described in the <a href="#_type_list">Type list</a>, or the <strong><code>new</code></strong> keyword:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> p = <span class="keyword">new</span> Person()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>new</code> keyword allows you to instantiate any non-abstract class, while optionally initialising its state. How you initialise the object depends on what constructors are defined. In the case of no constructors or a single default (zero-arg) constructor, you can use <strong>GroovyBeans</strong> syntax:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> p = <span class="keyword">new</span> Person(<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">John Doe</span><span class="delimiter">&quot;</span></span>, <span class="key">dateOfBirth</span>: ...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_properties">3.3. Properties</h3>
+<div class="paragraph">
+<p>Properties are an extension of fields based on the <strong>JavaBeans</strong> API. When you access properties, you always go through getter and setter methods. Groovy automatically generates those underlying methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>def p = new Person(...)
+
+// All of these work
+println "${p.name} (${p.dateOfBirth})"
+println "${p.getName()} (${p.getDateOfBirth()})"
+p.name = "Peter"
+p.setName("John")</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Read-only</strong> properties are implemented as standalone getter methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">Person</span> {
+    ...
+
+    String getDisplayDetails() {
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>name<span class="inline-delimiter">}</span></span><span class="content"> (</span><span class="inline"><span class="inline-delimiter">${</span>dateOfBirth<span class="inline-delimiter">}</span></span><span class="content">)</span><span class="delimiter">&quot;</span></span>
+    }
+}
+
+<span class="keyword">def</span> p = ...
+println p.displayDetails</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Adding a <strong>visibility scope</strong> to a field disables property behavior, i.e. the getter and setter methods aren&#8217;t generated:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">Person</span> {
+    <span class="directive">public</span> <span class="predefined-type">String</span> name
+}
+
+<span class="keyword">def</span> p = <span class="keyword">new</span> Person(<span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Peter</span><span class="delimiter">&quot;</span></span>)
+println p.getName()               <span class="comment">// Throws MissingMethodException!</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The GroovyBeans constructor syntax still works, though. Here are some examples of how property names maps to methods:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 4. Property naming convention</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property name</th>
+<th class="tableblock halign-left valign-top">Method name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getName()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateOfBirth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getDateOfBirth()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>URLContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getURLContent()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookISBN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getBookISBN()</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-08-26 14:22:04 BST
+Last updated 2015-09-12 14:31:22 BST
 </div>
 </div>
 </body>
