@@ -516,4 +516,96 @@ Legend:
 * _<args>_ = a comma-separated list of method arguments. Each argument is of the form `[<type>] <name>`. Cardinality: 0..*.
 * _extends_ = declares that this class subclasses another class. You cannot extend more than one class.
 * _implements_ = declares that this class implements the methods defined in the listed interfaces. You can implement as many interfaces as you like.
-* _
+
+Here's an example of a simple class with a property and method:
+
+[source]
+----
+class Person {
+    String name
+    Date dateOfBirth
+
+    int getAge() {
+        return (new Date() - dateOfBirth).intdiv(365)
+    }
+}
+----
+
+Remember that you can replace the types in front of the property names by `def` if you want to leave them untyped.
+
+=== Objects
+
+Objects are instances of classes. To create new objects, you can either use literals, such as those described in the <<Type list>>, or the **`new`** keyword:
+
+[source]
+def p = new Person()
+
+The `new` keyword allows you to instantiate any non-abstract class, while optionally initialising its state. How you initialise the object depends on what constructors are defined. In the case of no constructors or a single default (zero-arg) constructor, you can use **GroovyBeans** syntax:
+
+[source]
+def p = new Person(name: "John Doe", dateOfBirth: ...)
+
+=== Properties
+
+Properties are an extension of fields based on the *JavaBeans* API. When you access properties, you always go through getter and setter methods. Groovy automatically generates those underlying methods:
+
+[soure]
+----
+def p = new Person(...)
+
+// All of these work
+println "${p.name} (${p.dateOfBirth})"
+println "${p.getName()} (${p.getDateOfBirth()})"
+p.name = "Peter"
+p.setName("John")
+----
+
+**Read-only** properties are implemented as standalone getter methods:
+
+[source]
+----
+class Person {
+    ...
+
+    String getDisplayDetails() {
+        return "${name} (${dateOfBirth})"
+    }
+}
+
+def p = ...
+println p.displayDetails
+----
+
+Adding a **visibility scope** to a field disables property behavior, i.e. the getter and setter methods aren't generated:
+
+[source]
+----
+class Person {
+    public String name
+}
+
+def p = new Person(name: "Peter")
+println p.getName()               // Throws MissingMethodException!
+----
+
+The GroovyBeans constructor syntax still works, though. Here are some examples of how property names maps to methods:
+
+[cols="1,3"]
+.Property naming convention
+|===
+| Property name   | Method name
+
+| `name`
+| `getName()`
+
+| `dateOfBirth`
+| `getDateOfBirth()`
+
+| `URLContent`
+| `getURLContent()`
+
+| `bookISBN`
+| `getBookISBN()`
+
+|===
+
