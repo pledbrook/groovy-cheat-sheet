@@ -485,17 +485,22 @@ Groovy is an object-oriented language whose custom types are known as classes. I
 
     [<scope>] [static] [final] def|<type> fieldName [= <value>]            // <2>
 
-    [<scope>] [static] [final] def|<type>|void methodName([<args>]) {      // <3>
+    [<scope>] ClassName([<args]) {                                         // <3>
+        // Body
+    }
+
+    [<scope>] [static] [final] def|<type>|void methodName([<args>]) {      // <4>
         // Method body
     }
 
-    [<scope>] [abstract] def|<type>|void methodName([<args>])              // <4>
+    [<scope>] [abstract] def|<type>|void methodName([<args>])              // <5>
 }
 ----
-<1> Optional package/namespace for the class. Ideally all classes should be in a package.
-<2> Declares a field or property (see properties section) for storing state. Cardinality: 0..*
-<3> Defines a method implementation that can be called from other code.
-<4> Declares an _abstract_ method, i.e. one that has no implementation and must be implemented by subclasses.
+<1> Optional **package**/namespace for the class. Ideally all classes should be in a package.
+<2> Declares a **field** or **property** (see properties section) for storing state. Cardinality: 0..*
+<3> Declares a **constructor** that allows you to initialise new instances of the class.
+<4> Defines a **method** implementation that can be called from other code.
+<5> Declares an _abstract_ method, i.e. one that has no implementation and must be implemented by subclasses.
 
 Legend:
 
