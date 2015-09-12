@@ -18,8 +18,8 @@ Groovy comes with a selection of the basic types you'd expect, such as strings a
 | Type   |   Literals | Notes
 
 | java.lang.String
-| `"hi"`, `'hi'`, `/hi/`
-| Double quotes allow embedded expressions. Slashes mean you don't need to escape `\` characters (good for regular expressions).
+| `"hi"`, `'hi'`, `/hi/`, `$/hi/$`
+| Double quotes allow embedded expressions. Slashes mean you don't need to escape `\` characters, the dollar slashes mean you don't need to escape `/` characters (good for regular expressions).
 
 | java.lang.Character
 | `'H' as char`
@@ -75,6 +75,34 @@ Groovy comes with a selection of the basic types you'd expect, such as strings a
 
 |===
 
+In addition to all the string literal variants shown in the table above, you can create **multi-line strings** by using three quotes in a rows. For example:
+
+[source]
+----
+def text = """Dear sir,
+
+Welcome to Top Bank!
+"""
+----
+
+You can use single or double quotes, with the latter allowing you to embed Groovy expressions (the behavior matches that of the equivalent normal strings).
+
+**Line continuations** allow you to split long lines of text across multiple lines of your source code:
+
+[source]
+----
+def text = """\
+one \
+two \
+three \
+"""
+
+assert text == "one two three"
+----
+
+For this to work, you can't have any characters, even whitespace, after the backslash ('\').
+
+
 === Coercions
 
 Groovy allow you to easily convert values from one type to another if the conversion is known, for example `String` -> `Character`, or `List` -> `Set`. Either declare a variable of the target type:
@@ -104,11 +132,8 @@ Groovy allows you to implement operators in your own classes by implementing met
 
 Here's a list of such operators and what they generally mean. Try not to deviate from the semantics when you do your own operator overloading!
 
-[cols="1,1,2,1,1,2" options="header"]
+[cols="1,1,2" width="60" options="header"]
 |====
-| Operator
-| Method
-| Semantics
 | Operator
 | Method
 | Semantics
@@ -116,76 +141,87 @@ Here's a list of such operators and what they generally mean. Try not to deviate
 | `+`
 | a.plus(b)
 | Addition
-| `a[b]`
-| a.getAt(b)
-| Array access
 
 | `-`
 | a.minus(b)
 | Subtraction
-| `a[b] = c`
-| a.putAt(b, c)
-| Array mutation
 
 | `*`
 | a.multiply(b)
 | Multiplication
-| `a in b`
-| b.isCase(a)
-| 'is one of'
 
 | `/`
 | a.div(b)
 | Division
-| `<<`
-| a.leftShift(b)
-| Left shift or append
 
 | `%`
 | a.mod(b)
 | Modulo/remainder
-| `>>`
-| a.rightShift(b)
-| Right shift
 
 | `**`
 | a.power(b)
 | Exponentiation
-| `>>>`
-| a.rightShiftUnsigned(b)
-| Unsigned right shift
 
 | `\|`
 | a.or(b)
 | Bitwise OR
-| `++`
-| a.next()
-| Increment value
 
 | `&`
 | a.and(b)
 | Bitwise AND
-| `--`
-| a.previous()
-| Decrement value
 
 | `^`
 | a.xor(b)
 | Bitwise XOR
-| `+a`
-| a.positive()
-| Make positive
 
 | `as`
 | a.asType(b)
 | Type coercion
-| `-a`
-| a.negative()
-| Make negative
 
 | `a()`
 | a.call()
 | Method call
+
+| `a[b]`
+| a.getAt(b)
+| Array access
+
+| `a[b] = c`
+| a.putAt(b, c)
+| Array mutation
+
+| `a in b`
+| b.isCase(a)
+| 'is one of'
+
+| `<<`
+| a.leftShift(b)
+| Left shift or append
+
+| `>>`
+| a.rightShift(b)
+| Right shift
+
+| `>>>`
+| a.rightShiftUnsigned(b)
+| Unsigned right shift
+
+| `++`
+| a.next()
+| Increment value
+
+| `--`
+| a.previous()
+| Decrement value
+
+| `+a`
+| a.positive()
+| Make positive
+
+| `-a`
+| a.negative()
+| Make negative
+
 | `~a`
 | a.bitwiseNegative()
 | Bitwise negate
@@ -346,6 +382,8 @@ for (name in listOfNames) {
 }
 ----
 
+**Note** The above form of `for` works for any instance of `java.lang.Iterable`, such as collections and strings.
+
 There is a less common form of the `for` loop which mimics the behaviour of Java:
 
 [source,groovy]
@@ -364,13 +402,26 @@ while (<expr>) {
 
 where _<expr>_ is an expression that can be evaluated to a boolean according to Groovy Truth.
 
+For completeness, another common approach to iteration is with the `each()` method:
+
+[source]
+----
+List<String> listOfNames = ...
+
+listOfNames.each { String name ->
+    ...
+}
+----
+
+One notable disadvantage of this approach is that Groovy can't infer the type of the objects in the iterable, so it's often best to explicitly declare the type of the closure argument. See later for more closure syntax.
+
 === Exceptions
 
 The normal mechanism for error handling in Groovy is via exceptions, same as for Java. Unlike Java, though, Groovy treats all exceptions as runtime ones, which means the compiler does not force you to catch them.
 
 Here is the basic syntax:
 
-[source,groovy]
+[source]
 ----
 try {
     // Execute the code that might throw an exception
@@ -395,7 +446,29 @@ Throwing an exception is even easier:
 [source]
 throw new MyException()
 
-In other words, you instantiate an exception just like any other object and use it as the argument to `throw`. You can also use `throw` to rethrow an exception from a `catch` block.
+In other words, you instantiate an exception just like any other object and use it as the argument to `throw`. You can also use `throw` to rethrow an exception from a `catch` block. And just as you can pass arguments when creating normal objects, you can do the same with exceptions. One of the most common arguments (supported by most exceptions) is a message explaining the error:
+
+[source]
+throw new ConnectException("Credentials are invalid")
+
+If you want to execute the same block of code for more than one different exception, you can use a **multi-catch** block:
+
+[source]
+----
+try {
+    // Execute the code that might throw an exception
+}
+catch (SpecficException | OtherException ex) {
+    // Do something with the exception `ex`
+}
+----
+
+So in general, a catch takes the form:
+
+[source]
+catch (<type> [| <type>]* <var>) { ... }
+
+where * indicates 0 or more of what's in the square brackets.
 
 == Classes and objects
 
@@ -412,17 +485,22 @@ Groovy is an object-oriented language whose custom types are known as classes. I
 
     [<scope>] [static] [final] def|<type> fieldName [= <value>]            // <2>
 
-    [<scope>] [static] [final] def|<type>|void methodName([<args>]) {      // <3>
+    [<scope>] ClassName([<args]) {                                         // <3>
+        // Body
+    }
+
+    [<scope>] [static] [final] def|<type>|void methodName([<args>]) {      // <4>
         // Method body
     }
 
-    [<scope>] [abstract] def|<type>|void methodName([<args>])              // <4>
+    [<scope>] [abstract] def|<type>|void methodName([<args>])              // <5>
 }
 ----
-<1> Optional package/namespace for the class. Ideally all classes should be in a package.
-<2> Declares a field or property (see properties section) for storing state. Cardinality: 0..*
-<3> Defines a method implementation that can be called from other code.
-<4> Declares an _abstract_ method, i.e. one that has no implementation and must be implemented by subclasses.
+<1> Optional **package**/namespace for the class. Ideally all classes should be in a package.
+<2> Declares a **field** or **property** (see properties section) for storing state. Cardinality: 0..*
+<3> Declares a **constructor** that allows you to initialise new instances of the class.
+<4> Defines a **method** implementation that can be called from other code.
+<5> Declares an _abstract_ method, i.e. one that has no implementation and must be implemented by subclasses.
 
 Legend:
 
@@ -438,4 +516,96 @@ Legend:
 * _<args>_ = a comma-separated list of method arguments. Each argument is of the form `[<type>] <name>`. Cardinality: 0..*.
 * _extends_ = declares that this class subclasses another class. You cannot extend more than one class.
 * _implements_ = declares that this class implements the methods defined in the listed interfaces. You can implement as many interfaces as you like.
-* _
+
+Here's an example of a simple class with a property and method:
+
+[source]
+----
+class Person {
+    String name
+    Date dateOfBirth
+
+    int getAge() {
+        return (new Date() - dateOfBirth).intdiv(365)
+    }
+}
+----
+
+Remember that you can replace the types in front of the property names by `def` if you want to leave them untyped.
+
+=== Objects
+
+Objects are instances of classes. To create new objects, you can either use literals, such as those described in the <<Type list>>, or the **`new`** keyword:
+
+[source]
+def p = new Person()
+
+The `new` keyword allows you to instantiate any non-abstract class, while optionally initialising its state. How you initialise the object depends on what constructors are defined. In the case of no constructors or a single default (zero-arg) constructor, you can use **GroovyBeans** syntax:
+
+[source]
+def p = new Person(name: "John Doe", dateOfBirth: ...)
+
+=== Properties
+
+Properties are an extension of fields based on the *JavaBeans* API. When you access properties, you always go through getter and setter methods. Groovy automatically generates those underlying methods:
+
+[soure]
+----
+def p = new Person(...)
+
+// All of these work
+println "${p.name} (${p.dateOfBirth})"
+println "${p.getName()} (${p.getDateOfBirth()})"
+p.name = "Peter"
+p.setName("John")
+----
+
+**Read-only** properties are implemented as standalone getter methods:
+
+[source]
+----
+class Person {
+    ...
+
+    String getDisplayDetails() {
+        return "${name} (${dateOfBirth})"
+    }
+}
+
+def p = ...
+println p.displayDetails
+----
+
+Adding a **visibility scope** to a field disables property behavior, i.e. the getter and setter methods aren't generated:
+
+[source]
+----
+class Person {
+    public String name
+}
+
+def p = new Person(name: "Peter")
+println p.getName()               // Throws MissingMethodException!
+----
+
+The GroovyBeans constructor syntax still works, though. Here are some examples of how property names maps to methods:
+
+[cols="1,3"]
+.Property naming convention
+|===
+| Property name   | Method name
+
+| `name`
+| `getName()`
+
+| `dateOfBirth`
+| `getDateOfBirth()`
+
+| `URLContent`
+| `getURLContent()`
+
+| `bookISBN`
+| `getBookISBN()`
+
+|===
+
