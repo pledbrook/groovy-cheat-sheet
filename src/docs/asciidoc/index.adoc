@@ -446,7 +446,10 @@ Throwing an exception is even easier:
 [source]
 throw new MyException()
 
-In other words, you instantiate an exception just like any other object and use it as the argument to `throw`. You can also use `throw` to rethrow an exception from a `catch` block.
+In other words, you instantiate an exception just like any other object and use it as the argument to `throw`. You can also use `throw` to rethrow an exception from a `catch` block. And just as you can pass arguments when creating normal objects, you can do the same with exceptions. One of the most common arguments (supported by most exceptions) is a message explaining the error:
+
+[source]
+throw new ConnectException("Credentials are invalid")
 
 If you want to execute the same block of code for more than one different exception, you can use a **multi-catch** block:
 
